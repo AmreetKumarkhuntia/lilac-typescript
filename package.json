@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "lilac-typescript",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A Node.js process logger for backend applications",
   "main": "index.js",
   "directories": {
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Webwiznitr/project-lilac.git"
+    "url": "git+https://github.com/AmreetKumarkhuntia/lilac-typescript.git"
   },
-  "author": "webwiz",
+  "author": "Amreet Khuntia",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Webwiznitr/project-lilac/issues"
+    "url": "https://github.com/AmreetKumarkhuntia/lilac-typescript/issues"
   },
-  "homepage": "https://github.com/Webwiznitr/project-lilac#readme",
+  "homepage": "https://github.com/AmreetKumarkhuntia/lilac-typescript#readme",
   "devDependencies": {
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"

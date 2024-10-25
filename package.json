@@ -9,8 +9,10 @@
     "scripts": "scripts"
   },
   "scripts": {
+    "format": "npx prettier --write .",
     "test:direct": "NODE_OPTIONS='--import=./register.js' node ./test/test-direct.ts",
-    "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/test-log.ts"
+    "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/test-log.ts",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,8 @@
   },
   "homepage": "https://github.com/AmreetKumarkhuntia/lilac-typescript#readme",
   "devDependencies": {
+    "husky": "^9.1.6",
+    "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }

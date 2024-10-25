@@ -1,0 +1,4 @@
+#!/bin/sh
+
+chmod +x scripts/pre-commit.sh
+bash scripts/pre-commit.sh

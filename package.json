@@ -9,7 +9,7 @@
     "scripts": "scripts"
   },
   "scripts": {
-    "format": "npx prettier --write .",
+    "format": "git diff --name-only --cached | xargs npx prettier --write",
     "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/testLog.ts",
     "prepare": "husky",
     "pre-commit": "node scripts/pre-commit.js"

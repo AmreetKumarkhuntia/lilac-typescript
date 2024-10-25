@@ -49,5 +49,4 @@ async function executeCommand(command) {
   }
 }
 
-// Example usage:
-executeCommand('npm run format');
+await executeCommand('npm run format');

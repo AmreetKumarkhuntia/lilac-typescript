@@ -1,16 +1,12 @@
-import type {
-  LoggerSettings,
-  LogSetValues,
-  ProcessLog,
-} from "./types.ts";
+import type { LoggerSettings, LogSetValues, ProcessLog } from './types.ts';
 import {
   defaultDisplaySettings,
   keyToSettingMap,
   colorsMap,
   defaultKeyColorMap,
   defaultSeparator,
-} from "./defaults.ts";
-import { generateUUID, formatTimestamp } from "./utils.ts";
+} from './defaults.ts';
+import { generateUUID, formatTimestamp } from './utils.ts';
 
 /**
  * * ProcessLogger class for logging process information.
@@ -62,7 +58,7 @@ export class ProcessLogger {
    * * Supports adding timestamps, colors, and separators between fields.
    */
   directLog(obj: ProcessLog): void {
-    let printString = "";
+    let printString = '';
     const size = this.settings.displayOrder.length;
 
     for (let i = 0; i < size; i++) {
@@ -73,18 +69,18 @@ export class ProcessLogger {
           ? keyToSettingMap[this.settings.displayOrder[i + 1]]
           : null;
 
-      let val = setting !== "TIME" ? obj[key] ?? "null" : formatTimestamp();
+      let val = setting !== 'TIME' ? (obj[key] ?? 'null') : formatTimestamp();
 
       printString += this.settings.colorsMap[key].fgColor;
       printString += this.settings.colorsMap[key].bgColor;
 
       if (this.settings.enablePrintSpaceBetweenLogKeys && i !== 0) {
-        printString += " " + val;
+        printString += ' ' + val;
       } else {
         printString += val;
       }
       if (this.settings.enablePrintSpaceBetweenLogKeys) {
-        printString += " ";
+        printString += ' ';
       }
 
       printString += colorsMap.reset;
@@ -108,7 +104,11 @@ export class ProcessLogger {
    * @param {object} body - Additional data to be logged.
    * * Automatically generates process and session IDs if not set.
    */
-  logWithSetValues(functionName: string, functionType: string, body: object): void {
+  logWithSetValues(
+    functionName: string,
+    functionType: string,
+    body: object
+  ): void {
     const bodyText = JSON.stringify(body);
 
     if (!this.logSetValues.processId) {
@@ -130,7 +130,6 @@ export class ProcessLogger {
     this.directLog(log);
     this.logSetValues.orderId++;
   }
-
 }
 
 export default ProcessLogger;

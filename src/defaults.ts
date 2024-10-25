@@ -17,10 +17,21 @@ export const defaultDisplaySettings: LogField[] = [
   'ORDERID', // Display order ID
   'SESSIONID', // Display session ID
   'PROCESSID', // Display process ID
+  'FUNCTIONTYPE', // Display type
   'FUNCTIONNAME', // Display function name
-  'TYPE', // Display type
   'BODY', // Display body
 ];
+
+/**
+ * * Contains default keys to be masked
+ * & Default keys which are masked during logging
+ */
+
+export const defaultMaskingKeys: Set<string> = new Set([
+  'auth',
+  'authToken',
+  'apiKey',
+]);
 
 /**
  * * Contains key map.
@@ -32,7 +43,7 @@ export const keyToSettingMap: Record<LogField, LogKey> = {
   SESSIONID: 'sessionId', // Map SESSIONID setting to sessionId object key
   PROCESSID: 'processId', // Map PROCESSID setting to processId object key
   FUNCTIONNAME: 'functionName', // Map FUNCTIONNAME setting to functionName object key
-  TYPE: 'type', // Map TYPE setting to type object key
+  FUNCTIONTYPE: 'functionType', // Map TYPE setting to type object key
   BODY: 'body', // Map BODY setting to body object key
   TIME: 'time', // Show Currenct Time
 };
@@ -162,7 +173,7 @@ export const defaultKeyColorMap: KeyColorMap = {
     fgComplementary: colorsMap.fg.darkOlive,
     bgComplementary: colorsMap.bg.brightYellow,
   },
-  type: {
+  functionType: {
     fgColor: colorsMap.bold + colorsMap.fg.white,
     bgColor: colorsMap.bg.darkCyan,
     fgComplementary: colorsMap.fg.darkCyan,

@@ -24,3 +24,17 @@ export function formatTimestamp(): string {
 
   return `[${date}/${month}/${year}-${hours}:${minutes}:${seconds}.${milliseconds}]`;
 }
+
+export function maskKeys(data: object, maskingKeys: Set<string>): object {
+  const maskedData: { [key: string]: any } = {};
+
+  for (const key in data) {
+    if (maskingKeys.has(key)) {
+      maskedData[key] = '***********'; // Replace value with a mask
+    } else {
+      maskedData[key] = data[key]; // Keep original value
+    }
+  }
+
+  return maskedData;
+}

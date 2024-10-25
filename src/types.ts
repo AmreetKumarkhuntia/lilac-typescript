@@ -7,7 +7,7 @@ export type LogField =
   | 'SESSIONID'
   | 'PROCESSID'
   | 'FUNCTIONNAME'
-  | 'TYPE'
+  | 'FUNCTIONTYPE'
   | 'BODY';
 
 /**
@@ -18,7 +18,7 @@ export type LogKey =
   | 'sessionId'
   | 'processId'
   | 'functionName'
-  | 'type'
+  | 'functionType'
   | 'body'
   | 'time';
 
@@ -201,6 +201,8 @@ export type LoggerSettings = {
   printSeparator: string; // Character/string to use as separator.
   enablePrintSpaceBetweenLogKeys: boolean; // Adds space between fields if true.
   enableLogCounterIncrement: boolean; // Auto-increments log counter.
+  maskingKeys: Set<string>; // masking keys
+  enableKeyMasking: boolean; // Enables/disables masking keys
 };
 
 /**
@@ -220,6 +222,25 @@ export type ProcessLog = {
   sessionId: string; // Session ID associated with the log.
   processId: string; // Process ID associated with the log.
   functionName: string; // Name of the logged function.
-  type: string; // Category/type of the logged function.
+  functionType: FunctionType | string; // Category/type of the logged function.
   body: string; // Additional log information in JSON format.
 };
+
+export type FunctionType =
+  | 'FUNCTION_CALLED'
+  | 'FUNCTION_CALL_RESULT'
+  | 'FUNCTION_INFO'
+  | 'EXTERNAL_API_REQUEST'
+  | 'EXTERNAL_API_RESPONSE'
+  | 'EXTERNAL_API_INFO'
+  | 'EXCEPTION'
+  | 'SERVER_REQUEST'
+  | 'SERVER_RESPONSE'
+  | 'SERVER_INFO'
+  | 'DB_QUERY_REQUEST'
+  | 'DB_QUERY_RESPONSE'
+  | 'DB_QUERY_INFO'
+  | 'DEBUG'
+  | 'REDIS_QUERY_REQUEST'
+  | 'REDIS_QUERY_RESULT'
+  | 'REDIS_QUERY_INFO';

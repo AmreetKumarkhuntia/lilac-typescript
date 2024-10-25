@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "lilac-typescript",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A Node.js process logger for backend applications",
   "main": "index.js",
   "directories": {
@@ -10,9 +10,9 @@
   },
   "scripts": {
     "format": "npx prettier --write .",
-    "test:direct": "NODE_OPTIONS='--import=./register.js' node ./test/test-direct.ts",
-    "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/test-log.ts",
-    "prepare": "husky"
+    "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/testLog.ts",
+    "prepare": "husky",
+    "pre-commit": "node scripts/pre-commit.js"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
 #!/bin/sh
-
-chmod +x scripts/pre-commit.sh
-bash scripts/pre-commit.sh
+# exit 1 will prevent commit to happen, so you can more easily debug things
+echo "RUNNING PRE COMMIT"
+npm run pre-commit

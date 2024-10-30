@@ -6,44 +6,51 @@ A Node.js process logger for backend applications.
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Scripts](#scripts)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
 
 ## Installation
 
-To install the project, clone the repository and run the following commands:
-git clone https://github.com/AmreetKumarkhuntia/lilac-typescript.git
-cd lilac-typescript
-npm install
+To install the package run the following commands:
+
+1. Installing packaing
+```typescript
+npm i lilac-typescript
+```
 
 ## Usage
 
-To use the logger in your application, you can import it as follows:
-import logger from './path/to/logger';
-logger.log('Your log message here');
-
-### Example
-
 Here’s a simple example of how to use the logger:
-import logger from './path/to/logger';
-logger.info('This is an info message');
-logger.error('This is an error message');
 
-## Scripts
+1. Importing the package:
+```typescript
+import ProcessLogger from 'lilac-typescript/src';
+```
 
-You can run the following scripts:
+2. Initiating the ProcessLogger:
+```typescript
+export const logger = new ProcessLogger();
+```
 
-- `test:direct`: Runs direct tests.
-- `test:log`: Runs logging tests.
+3. Using the logger:
+```typescript
+import { logger } from '$server/logger'; // change whatever the logger path is
 
-To execute a script, use the following command:
-npm run <script-name>
+export function myFunction(input: object): object{
+    const output:object = {
+        id:"1234",
+        name: "Aleshan"
+    };
+    const functionName: string = "myFunction";
+    logger.logFunctionCalled(functionName,{input});
+    logger.logFunctionCallResult(functionName,{output});
+    
+    return output;
+}
 
-### Example
+```
 
-npm run test:direct
 
 ## Contributing
 

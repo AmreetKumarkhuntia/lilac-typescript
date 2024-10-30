@@ -15,6 +15,7 @@ A Node.js process logger for backend applications.
 To install the package run the following commands:
 
 1. Installing packaing
+
 ```typescript
 npm i lilac-typescript
 ```
@@ -24,33 +25,34 @@ npm i lilac-typescript
 Here’s a simple example of how to use the logger:
 
 1. Importing the package:
+
 ```typescript
 import ProcessLogger from 'lilac-typescript/src';
 ```
 
 2. Initiating the ProcessLogger:
+
 ```typescript
 export const logger = new ProcessLogger();
 ```
 
 3. Using the logger:
+
 ```typescript
 import { logger } from '$server/logger'; // change whatever the logger path is
 
-export function myFunction(input: object): object{
-    const output:object = {
-        id:"1234",
-        name: "Aleshan"
-    };
-    const functionName: string = "myFunction";
-    logger.logFunctionCalled(functionName,{input});
-    logger.logFunctionCallResult(functionName,{output});
-    
-    return output;
+export function myFunction(input: object): object {
+  const output: object = {
+    id: '1234',
+    name: 'Aleshan',
+  };
+  const functionName: string = 'myFunction';
+  logger.logFunctionCalled(functionName, { input });
+  logger.logFunctionCallResult(functionName, { output });
+
+  return output;
 }
-
 ```
-
 
 ## Contributing
 
@@ -61,7 +63,7 @@ Contributions are welcome! Please follow these steps to contribute:
 3. Make your changes.
 4. Commit your changes (`git commit -m 'Add new feature'`).
 5. Push to the branch (`git push origin feature-branch`).
-6. Create a pull request.
+6. Create a pull request and add changelog along with test screenshot
 
 ## License
 

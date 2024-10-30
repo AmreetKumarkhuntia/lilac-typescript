@@ -14,7 +14,7 @@ A Node.js process logger for backend applications.
 
 To install the package run the following commands:
 
-1. Installing packaing
+Installing package
 
 ```typescript
 npm i lilac-typescript
@@ -27,7 +27,7 @@ Here’s a simple example of how to use the logger:
 1. Importing the package:
 
 ```typescript
-import ProcessLogger from 'lilac-typescript/src';
+import { ProcessLogger } from 'lilac-typescript/src';
 ```
 
 2. Initiating the ProcessLogger:
@@ -53,6 +53,11 @@ export function myFunction(input: object): object {
   return output;
 }
 ```
+
+## Examples
+Here is an example of logging:
+
+![lilac](https://github.com/user-attachments/assets/06c93b1f-b219-4ce0-ad66-b253c699e14f)
 
 ## Contributing
 

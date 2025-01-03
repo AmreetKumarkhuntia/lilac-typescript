@@ -55,6 +55,7 @@ export function myFunction(input: object): object {
 ```
 
 ## Examples
+
 Here is an example of logging:
 
 ![lilac](https://github.com/user-attachments/assets/06c93b1f-b219-4ce0-ad66-b253c699e14f)

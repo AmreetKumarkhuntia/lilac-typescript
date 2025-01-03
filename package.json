@@ -1,33 +1,47 @@
 {
   "type": "module",
   "name": "lilac-typescript",
-  "version": "1.1.1",
+  "version": "1.3.0",
+  "author": "Amreet Khuntia",
+  "license": "Apache-2.0",
   "description": "A Node.js process logger for backend applications",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "scripts": "scripts"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
+  "files": [
+    "dist/",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
+    "build": "chmod +x ./scripts/npm-build.sh && bash ./scripts/npm-build.sh",
     "format": "npx prettier --write .",
     "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/testLog.ts",
     "prepare": "husky",
-    "pre-commit": "node scripts/pre-commit.js"
+    "pre-commit": "node scripts/pre-commit.js",
+    "build:publish": "chmod +x ./scripts/npm-publish.sh && bash ./scripts/npm-publish.sh"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AmreetKumarkhuntia/lilac-typescript.git"
   },
-  "author": "Amreet Khuntia",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/AmreetKumarkhuntia/lilac-typescript/issues"
   },
   "homepage": "https://github.com/AmreetKumarkhuntia/lilac-typescript#readme",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.2",
     "husky": "^9.1.6",
     "prettier": "^3.3.3",
+    "rollup": "^4.29.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
   }
 }

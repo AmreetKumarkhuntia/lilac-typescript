@@ -27,7 +27,7 @@ Here’s a simple example of how to use the logger:
 1. Importing the package:
 
 ```typescript
-import { ProcessLogger } from 'lilac-typescript/src';
+import { ProcessLogger } from 'lilac-typescript';
 ```
 
 2. Initiating the ProcessLogger:

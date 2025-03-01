@@ -108,7 +108,7 @@ export class ProcessLogger {
         }
 
         printString += colorsMap.reset;
-      } else if (this.settings.enablePrintSeparator) {
+      } else if (i < size - 1 && this.settings.enablePrintSeparator) {
         printString += this.settings.printSeparator;
       }
     }

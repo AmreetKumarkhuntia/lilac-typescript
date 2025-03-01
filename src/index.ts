@@ -91,9 +91,11 @@ export class ProcessLogger {
       } else {
         printString += val;
       }
+
       if (this.settings.enablePrintSpaceBetweenLogKeys) {
         printString += ' ';
       }
+
       if (!this.settings.skipFormatting) {
         printString += colorsMap.reset;
 
@@ -104,7 +106,10 @@ export class ProcessLogger {
           }
           printString += this.settings.printSeparator;
         }
+
         printString += colorsMap.reset;
+      } else if (this.settings.enablePrintSeparator) {
+        printString += this.settings.printSeparator;
       }
     }
     console.log(printString);

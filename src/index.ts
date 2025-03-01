@@ -31,6 +31,7 @@ export class ProcessLogger {
     enablePrintSpaceBetweenLogKeys: true,
     enableLogCounterIncrement: true,
     enableKeyMasking: true,
+    skipFormatting: false,
   };
 
   /**
@@ -80,8 +81,10 @@ export class ProcessLogger {
 
       let val = setting !== 'TIME' ? (obj[key] ?? 'null') : formatTimestamp();
 
-      printString += this.settings.colorsMap[key].fgColor;
-      printString += this.settings.colorsMap[key].bgColor;
+      if (!this.settings.skipFormatting) {
+        printString += this.settings.colorsMap[key].fgColor;
+        printString += this.settings.colorsMap[key].bgColor;
+      }
 
       if (this.settings.enablePrintSpaceBetweenLogKeys && i !== 0) {
         printString += ' ' + val;
@@ -91,17 +94,18 @@ export class ProcessLogger {
       if (this.settings.enablePrintSpaceBetweenLogKeys) {
         printString += ' ';
       }
+      if (!this.settings.skipFormatting) {
+        printString += colorsMap.reset;
 
-      printString += colorsMap.reset;
-
-      if (i < size - 1 && this.settings.enablePrintSeparator) {
-        printString += this.settings.colorsMap[key].fgComplementary;
-        if (nextKey) {
-          printString += this.settings.colorsMap[nextKey].bgColor;
+        if (i < size - 1 && this.settings.enablePrintSeparator) {
+          printString += this.settings.colorsMap[key].fgComplementary;
+          if (nextKey) {
+            printString += this.settings.colorsMap[nextKey].bgColor;
+          }
+          printString += this.settings.printSeparator;
         }
-        printString += this.settings.printSeparator;
+        printString += colorsMap.reset;
       }
-      printString += colorsMap.reset;
     }
     console.log(printString);
   }
@@ -120,11 +124,6 @@ export class ProcessLogger {
   ): void {
     let loggingBody = body;
 
-    if (this.settings.enableKeyMasking === true && functionType !== 'DEBUG') {
-      const maskingKeys = this.settings.maskingKeys;
-      loggingBody = maskKeys(loggingBody, maskingKeys);
-    }
-
     if (!this.logSetValues.processId) {
       this.logSetValues.processId = generateUUID();
     }
@@ -132,17 +131,27 @@ export class ProcessLogger {
       this.logSetValues.sessionId = generateUUID();
     }
 
-    const bodyText = JSON.stringify(loggingBody);
-    const log: ProcessLog = {
-      orderId: this.logSetValues.orderId,
-      sessionId: this.logSetValues.sessionId,
-      processId: this.logSetValues.processId,
-      functionName,
-      functionType,
-      body: bodyText,
-    };
+    // For safe logging
+    try {
+      if (this.settings.enableKeyMasking === true && functionType !== 'DEBUG') {
+        const maskingKeys = this.settings.maskingKeys;
+        loggingBody = maskKeys(loggingBody, maskingKeys);
+      }
 
-    this.directLog(log);
+      const bodyText = JSON.stringify(loggingBody);
+      const log: ProcessLog = {
+        orderId: this.logSetValues.orderId,
+        sessionId: this.logSetValues.sessionId,
+        processId: this.logSetValues.processId,
+        functionName,
+        functionType,
+        body: bodyText,
+      };
+
+      this.directLog(log);
+    } catch (err) {
+      console.log(String(err));
+    }
     this.logSetValues.orderId++;
   }
 

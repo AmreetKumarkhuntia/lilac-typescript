@@ -2,6 +2,7 @@ import ProcessLogger from '../src/index.ts';
 
 const logger = new ProcessLogger({
   maskingKeys: new Set<string>(['sensitiveKey']),
+  skipFormatting: true,
 });
 
 function testLogFunctionCalled(): void {

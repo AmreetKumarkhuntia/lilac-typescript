@@ -203,6 +203,7 @@ export type LoggerSettings = {
   enableLogCounterIncrement: boolean; // Auto-increments log counter.
   maskingKeys: Set<string>; // masking keys
   enableKeyMasking: boolean; // Enables/disables masking keys
+  skipFormatting: boolean; // Enables/disables formatting of keys
 };
 
 /**

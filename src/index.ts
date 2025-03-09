@@ -3,7 +3,7 @@ import type {
   LoggerSettings,
   LogSetValues,
   ProcessLog,
-} from './types.ts';
+} from './types';
 import {
   defaultDisplaySettings,
   keyToSettingMap,

@@ -5,7 +5,7 @@ import type {
   LogKey,
   Month,
   SpecialCharacter,
-} from './types.ts';
+} from './types';
 
 /**
  * * Contains default display settings.

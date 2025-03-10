@@ -1,3 +1,5 @@
+import { Kafka, ProducerConfig } from 'kafkajs';
+
 /**
  * * Type for available log fields in display settings.
  */
@@ -103,6 +105,46 @@ export type ProcessLog = {
 };
 
 /**
+ * Configuration object for Kafka producer/consumer.
+ */
+export type KafkaConfig = {
+  /**
+   * List of Kafka broker addresses.
+   * Example: ["kafka-broker1:9092", "kafka-broker2:9092"]
+   */
+  brokerList: string[];
+
+  /**
+   * Client ID used to identify the Kafka client.
+   * Useful for tracking and debugging.
+   */
+  clientId: string;
+
+  /**
+   * List of Kafka topics to produce or consume from.
+   * Example: ["topic1", "topic2"]
+   */
+  kafkaTopics: string[];
+
+  /**
+   * Disconnects producer after sending messages
+   */
+
+  disconnectAfterSendingMessage: boolean;
+
+  /**
+   * Publishing key for kafka
+   */
+  messageKey?: string | null;
+
+  /**
+   * Custom ProducerConfig
+   */
+
+  producerConfig: ProducerConfig;
+};
+
+/**
  * * Type for logger settings configuration.
  * ? Defines how the logger will behave and format logs.
  */
@@ -136,4 +178,10 @@ export type LoggerSettings = {
 
   /** Enable/disable kafka */
   enableKafkaLogPublishing?: boolean;
+
+  /** Kafka config for publishing logs */
+  kafkaConfig?: KafkaConfig | null;
+
+  /** Kafka client to send message etc... */
+  kafkaClient?: Kafka | null;
 };

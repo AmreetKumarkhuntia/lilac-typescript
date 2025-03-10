@@ -13,6 +13,8 @@ import {
   defaultMaskingKeys,
 } from './defaults.ts';
 import { generateUUID, formatTimestamp, maskKeys } from './utils.ts';
+import { connectKafka, disconnectKafka, sendMessage } from './kafka/index.ts';
+import { Message } from 'kafkajs';
 
 /**
  * * ProcessLogger class for logging process information.
@@ -32,6 +34,9 @@ export class ProcessLogger {
     enableLogCounterIncrement: true,
     enableKeyMasking: true,
     skipFormatting: false,
+    enableKafkaLogPublishing: false,
+    kafkaConfig: null,
+    kafkaClient: null,
   };
 
   /**
@@ -115,6 +120,58 @@ export class ProcessLogger {
     console.log(printString);
   }
 
+  private async connectToKafka() {
+    if (
+      this.settings.enableKafkaLogPublishing === true &&
+      (this.settings.kafkaClient === null ||
+        this.settings.kafkaClient === undefined)
+    ) {
+      if (
+        this.settings.kafkaConfig !== undefined &&
+        this.settings.kafkaConfig !== null
+      ) {
+        const kafkaClient = await connectKafka(
+          this.settings.kafkaConfig.brokerList,
+          this.settings.kafkaConfig.clientId
+        );
+
+        this.settings.kafkaClient = kafkaClient;
+      }
+    }
+  }
+
+  async disconnectKafkaClient() {
+    const kafkaClient = this.settings.kafkaClient ?? null;
+    if (kafkaClient !== null) {
+      disconnectKafka(kafkaClient);
+    }
+  }
+
+  private async logToKafka(obj: ProcessLog) {
+    try {
+      await this.connectToKafka();
+
+      const kafkaClient = this.settings.kafkaClient ?? null;
+      const kafkaConfig = this.settings.kafkaConfig ?? null;
+
+      if (kafkaClient !== null && kafkaConfig !== null) {
+        const messageBody = JSON.stringify(obj);
+        const message: Message = {
+          key: kafkaConfig.messageKey,
+          value: messageBody,
+        };
+        sendMessage(
+          kafkaClient.producer(),
+          kafkaConfig.kafkaTopics,
+          [message],
+          kafkaConfig.disconnectAfterSendingMessage
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   /**
    * * Logs detailed information with preset values.
    * @param {string} functionName - Name of the function being logged.
@@ -122,7 +179,7 @@ export class ProcessLogger {
    * @param {object} body - Additional data to be logged.
    * * Automatically generates process and session IDs if not set.
    */
-  log(
+  private log(
     functionName: string,
     functionType: FunctionType | string,
     body: object
@@ -153,7 +210,11 @@ export class ProcessLogger {
         body: bodyText,
       };
 
+      // direct logging
       this.directLog(log);
+
+      //log to kafka
+      this.logToKafka(log);
     } catch (err) {
       console.log(String(err));
     }

@@ -1,119 +1,150 @@
+import { Partitioners } from 'kafkajs';
 import ProcessLogger from '../src/index.ts';
+import { LoggerSettings } from '../src/types/coreTypes.ts';
 
-const logger = new ProcessLogger({
-  maskingKeys: new Set<string>(['sensitiveKey']),
-  skipFormatting: true,
-});
+const testConfigs: Array<Partial<LoggerSettings>> = [
+  // //Default test case
+  // {},
+  // //Masking test case
+  // {
+  //   maskingKeys: new Set<string>(['sensitiveKey']),
+  // },
+  // // Formatting test case
+  // {
+  //   skipFormatting: true,
+  // },
+  {
+    enableKafkaLogPublishing: true,
+    kafkaConfig: {
+      brokerList: ['localhost:9092'],
+      clientId: 'test-kafka-client',
+      kafkaTopics: ['kafka-test-topic'],
+      disconnectAfterSendingMessage: false,
+      producerConfig: {
+        createPartitioner: Partitioners.LegacyPartitioner,
+      },
+    },
+  },
+];
 
-function testLogFunctionCalled(): void {
+function testLogFunctionCalled(currLogger: ProcessLogger): void {
   const functionName: string = 'testFunction';
   const body = { key: 'value' };
-  logger.logFunctionCalled(functionName, body);
+  currLogger.logFunctionCalled(functionName, body);
 }
 
-function testLogFunctionCallResult(): void {
+function testLogFunctionCallResult(currLogger: ProcessLogger): void {
   const functionName: string = 'testFunction';
   const result = { resultKey: 'resultValue' };
-  logger.logFunctionCallResult(functionName, result);
+  currLogger.logFunctionCallResult(functionName, result);
 }
 
-function testLogFunctionInfo(): void {
+function testLogFunctionInfo(currLogger: ProcessLogger): void {
   const functionName: string = 'testFunction';
   const info = { infoKey: 'infoValue' };
-  logger.logFunctionInfo(functionName, info);
+  currLogger.logFunctionInfo(functionName, info);
 }
 
-function testLogExternalApiRequest(): void {
+function testLogExternalApiRequest(currLogger: ProcessLogger): void {
   const apiName: string = 'testApi';
   const request = { param: 'value' };
-  logger.logExternalApiRequest(apiName, request);
+  currLogger.logExternalApiRequest(apiName, request);
 }
 
-function testLogExternalApiResponse(): void {
+function testLogExternalApiResponse(currLogger: ProcessLogger): void {
   const apiName: string = 'testApi';
   const response = { responseKey: 'responseValue' };
-  logger.logExternalApiResponse(apiName, response);
+  currLogger.logExternalApiResponse(apiName, response);
 }
 
-function testLogException(): void {
+function testLogException(currLogger: ProcessLogger): void {
   const functionName: string = 'testFunction';
   const error = 'Test error';
-  logger.logException(functionName, error);
+  currLogger.logException(functionName, error);
 }
 
-function testLogServerRequest(): void {
+function testLogServerRequest(currLogger: ProcessLogger): void {
   const endpoint: string = 'testEndpoint';
   const request = { requestKey: 'requestValue' };
-  logger.logServerRequest(endpoint, request);
+  currLogger.logServerRequest(endpoint, request);
 }
 
-function testLogServerResponse(): void {
+function testLogServerResponse(currLogger: ProcessLogger): void {
   const endpoint: string = 'testEndpoint';
   const response = { responseKey: 'responseValue' };
-  logger.logServerResponse(endpoint, response);
+  currLogger.logServerResponse(endpoint, response);
 }
 
-function testLogDbQueryRequest(): void {
+function testLogDbQueryRequest(currLogger: ProcessLogger): void {
   const query: string = 'SELECT * FROM test';
   const parameters = { param1: 'value1' };
-  logger.logDbQueryRequest(query, parameters);
+  currLogger.logDbQueryRequest(query, parameters);
 }
 
-function testLogDbQueryResponse(): void {
+function testLogDbQueryResponse(currLogger: ProcessLogger): void {
   const query: string = 'SELECT * FROM test';
   const response = { rows: [] };
-  logger.logDbQueryResponse(query, response);
+  currLogger.logDbQueryResponse(query, response);
 }
 
-function testLogRedisQueryRequest(): void {
+function testLogRedisQueryRequest(currLogger: ProcessLogger): void {
   const query: string = 'GET testKey';
   const parameters = { param: 'value' };
-  logger.logRedisQueryRequest(query, parameters);
+  currLogger.logRedisQueryRequest(query, parameters);
 }
 
-function testLogRedisQueryResult(): void {
+function testLogRedisQueryResult(currLogger: ProcessLogger): void {
   const query: string = 'GET testKey';
   const result = { resultKey: 'resultValue' };
-  logger.logRedisQueryResult(query, result);
+  currLogger.logRedisQueryResult(query, result);
 }
 
-function testLogDebug(): void {
+function testLogDebug(currLogger: ProcessLogger): void {
   const message: string = 'Test debug message';
   const data = { key: 'value' };
-  logger.logDebug(message, data);
+  currLogger.logDebug(message, data);
 }
 
-function testLogWithMaskingInDebug(): void {
+function testLogWithMaskingInDebug(currLogger: ProcessLogger): void {
   const message: string = 'Debugging sensitive information';
   const data = {
     sensitiveKey: 'sensitiveValue',
     anotherKey: 'anotherValue',
   };
-  logger.logDebug(message, data);
+  currLogger.logDebug(message, data);
 }
 
-function testLogWithMasking(): void {
+function testLogWithMasking(currLogger: ProcessLogger): void {
   const message: string = 'Debugging sensitive information';
   const data = {
     sensitiveKey: 'sensitiveValue',
     anotherKey: 'anotherValue',
   };
-  logger.logFunctionCalled(message, data);
+  currLogger.logFunctionCalled(message, data);
 }
 
 // Run all tests
-testLogFunctionCalled();
-testLogFunctionCallResult();
-testLogFunctionInfo();
-testLogExternalApiRequest();
-testLogExternalApiResponse();
-testLogException();
-testLogServerRequest();
-testLogServerResponse();
-testLogDbQueryRequest();
-testLogDbQueryResponse();
-testLogRedisQueryRequest();
-testLogRedisQueryResult();
-testLogDebug();
-testLogWithMaskingInDebug();
-testLogWithMasking();
+async function runTests() {
+  for (let i = 0; i < testConfigs.length; i++) {
+    const currConfig = testConfigs[i];
+    console.log(`>>>>>>>>>>> RUNNING TEST CASE: ${i} <<<<<<<<<<<`);
+    const currLogger = new ProcessLogger(currConfig);
+    testLogFunctionCalled(currLogger);
+    testLogFunctionCallResult(currLogger);
+    testLogFunctionInfo(currLogger);
+    testLogExternalApiRequest(currLogger);
+    testLogExternalApiResponse(currLogger);
+    testLogException(currLogger);
+    testLogServerRequest(currLogger);
+    testLogServerResponse(currLogger);
+    testLogDbQueryRequest(currLogger);
+    testLogDbQueryResponse(currLogger);
+    testLogRedisQueryRequest(currLogger);
+    testLogRedisQueryResult(currLogger);
+    testLogDebug(currLogger);
+    testLogWithMaskingInDebug(currLogger);
+    testLogWithMasking(currLogger);
+  }
+}
+
+runTests();

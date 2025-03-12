@@ -17,12 +17,12 @@ import { connectKafka, disconnectKafka, sendMessage } from './kafka/index.ts';
 import { Message } from 'kafkajs';
 
 /**
- * * ProcessLogger class for logging process information.
- * * Allows customization of the display order and color settings.
+ * ProcessLogger class for logging process information.
+ * Allows customization of the display order and color settings.
  */
 export class ProcessLogger {
   /**
-   * * Default logger settings for format and behavior.
+   * Default logger settings for format and behavior.
    */
   settings: LoggerSettings = {
     displayOrder: defaultDisplaySettings,
@@ -40,7 +40,7 @@ export class ProcessLogger {
   };
 
   /**
-   * * Values used to track order, session, and process IDs.
+   * Values used to track order, session, and process IDs.
    */
   logSetValues: LogSetValues = {
     orderId: 0,
@@ -49,10 +49,10 @@ export class ProcessLogger {
   };
 
   /**
-   * * Constructor to initialize the logger with custom settings.
+   * Constructor to initialize the logger with custom settings.
    * @param {Partial<LoggerSettings>} settings - Optional custom settings.
-   * * Allows overriding default settings by passing custom values.
-   * * Automatically generates a session ID during instantiation.
+   * Allows overriding default settings by passing custom values.
+   * Automatically generates a session ID during instantiation.
    */
   constructor(settings?: Partial<LoggerSettings>) {
     if (settings) {
@@ -66,10 +66,10 @@ export class ProcessLogger {
   }
 
   /**
-   * * Logs process information directly based on the provided object.
+   * Logs process information directly based on the provided object.
    * @param {Record<string, any>} obj - Object containing process info.
-   * * Logs fields in the order specified by the `displayOrder` setting.
-   * * Supports adding timestamps, colors, and separators between fields.
+   * Logs fields in the order specified by the `displayOrder` setting.
+   * Supports adding timestamps, colors, and separators between fields.
    */
   private directLog(obj: ProcessLog): void {
     let printString = '';
@@ -120,6 +120,9 @@ export class ProcessLogger {
     console.log(printString);
   }
 
+  /**
+   * Connects to Kafka if Kafka log publishing is enabled and a client is not already connected.
+   */
   private async connectToKafka() {
     if (
       this.settings.enableKafkaLogPublishing === true &&
@@ -140,6 +143,9 @@ export class ProcessLogger {
     }
   }
 
+  /**
+   * Disconnects the Kafka client if it is connected.
+   */
   async disconnectKafkaClient() {
     const kafkaClient = this.settings.kafkaClient ?? null;
     if (kafkaClient !== null) {
@@ -147,6 +153,10 @@ export class ProcessLogger {
     }
   }
 
+  /**
+   * Logs the provided process log object to Kafka, if Kafka logging is enabled.
+   * @param {ProcessLog} obj - The process log object to send to Kafka.
+   */
   private async logToKafka(obj: ProcessLog) {
     try {
       await this.connectToKafka();
@@ -173,11 +183,11 @@ export class ProcessLogger {
   }
 
   /**
-   * * Logs detailed information with preset values.
+   * Logs detailed information with preset values.
    * @param {string} functionName - Name of the function being logged.
    * @param {FunctionType | string} functionType - Type/category of the function.
    * @param {object} body - Additional data to be logged.
-   * * Automatically generates process and session IDs if not set.
+   * Automatically generates process and session IDs if not set.
    */
   private log(
     functionName: string,

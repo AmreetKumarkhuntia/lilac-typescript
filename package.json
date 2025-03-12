@@ -19,11 +19,12 @@
   ],
   "scripts": {
     "build": "chmod +x ./scripts/npm-build.sh && bash ./scripts/npm-build.sh",
+    "build:publish": "chmod +x ./scripts/npm-publish.sh && bash ./scripts/npm-publish.sh",
     "format": "npx prettier --write .",
-    "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/testLog.ts",
-    "prepare": "husky",
     "pre-commit": "node scripts/pre-commit.js",
-    "build:publish": "chmod +x ./scripts/npm-publish.sh && bash ./scripts/npm-publish.sh"
+    "prepare": "husky",
+    "start:kafka": "chmod +x ./scripts/start-kafka.sh && bash ./scripts/start-kafka.sh",
+    "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/testLog.ts"
   },
   "repository": {
     "type": "git",

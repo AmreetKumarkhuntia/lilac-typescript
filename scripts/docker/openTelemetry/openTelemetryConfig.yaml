@@ -1,0 +1,40 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+processors:
+  transform:
+    trace_statements:
+      - context: span
+        statements:
+          - set(attributes["startTimeUnixNano"], Int(attributes["startTimeUnixNano"] / 1000000)) where IsMatch(attributes["startTimeUnixNano"], "^.*$")
+          - set(attributes["endTimeUnixNano"], Int(attributes["endTimeUnixNano"] / 1000000)) where IsMatch(attributes["endTimeUnixNano"], "^.*$")
+  batch: {}
+
+exporters:
+  debug:
+    verbosity: detailed
+  
+  elasticsearch:
+    endpoints: ["http://elasticsearch:9200"]      # Replace with your Elasticsearch endpoint
+    logs_index: "logs-index"                  # Optional: Custom index name for logs
+    traces_index: "traces-index"              # Optional: Custom index name for traces
+    flush:
+      bytes: 1048576                          # Flush buffer size in bytes
+      interval: "10s"                         # Flush interval
+
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [transform, batch]
+      exporters: [debug, elasticsearch]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, elasticsearch]

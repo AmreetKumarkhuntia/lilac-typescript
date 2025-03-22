@@ -1,3 +1,4 @@
+import { NodeSDK } from '@opentelemetry/sdk-node';
 import { Kafka, ProducerConfig } from 'kafkajs';
 
 /**
@@ -24,6 +25,9 @@ export type LogKey =
   | 'body'
   | 'time';
 
+/**
+ * * Type for different function categories or types in logging.
+ */
 export type FunctionType =
   | 'FUNCTION_CALLED'
   | 'FUNCTION_CALL_RESULT'
@@ -105,7 +109,7 @@ export type ProcessLog = {
 };
 
 /**
- * Configuration object for Kafka producer/consumer.
+ * * Configuration object for Kafka producer/consumer.
  */
 export type KafkaConfig = {
   /**
@@ -127,20 +131,21 @@ export type KafkaConfig = {
   kafkaTopics: string[];
 
   /**
-   * Disconnects producer after sending messages
+   * Disconnects producer after sending messages.
+   * If true, the Kafka producer will close the connection after each message is sent.
    */
-
   disconnectAfterSendingMessage: boolean;
 
   /**
-   * Publishing key for kafka
+   * Publishing key for Kafka.
+   * Used to determine message partitioning and ordering.
    */
   messageKey?: string | null;
 
   /**
-   * Custom ProducerConfig
+   * Custom configuration for Kafka producer.
+   * Allows fine-tuning of Kafka producer behavior.
    */
-
   producerConfig: ProducerConfig;
 };
 
@@ -149,7 +154,7 @@ export type KafkaConfig = {
  * ? Defines how the logger will behave and format logs.
  */
 export type LoggerSettings = {
-  /** Order of log fields. */
+  /** Order of log fields in the output. */
   displayOrder: string[];
 
   /** Color settings for each log field. */
@@ -158,30 +163,47 @@ export type LoggerSettings = {
   /** Enables/disables separator between logs. */
   enablePrintSeparator: boolean;
 
-  /** Character/string to use as separator. */
+  /** Character/string to use as separator between log fields. */
   printSeparator: string;
 
   /** Adds space between fields if true. */
   enablePrintSpaceBetweenLogKeys: boolean;
 
-  /** Auto-increments log counter. */
+  /** Auto-increments log counter with each new log entry. */
   enableLogCounterIncrement: boolean;
 
-  /** Masking keys. */
+  /** List of keys to mask in the log output. */
   maskingKeys: Set<string>;
 
-  /** Enables/disables masking keys. */
+  /** Enables/disables masking of specific keys. */
   enableKeyMasking: boolean;
 
-  /** Enables/disables formatting of keys. */
+  /** Skips formatting of keys if true. */
   skipFormatting: boolean;
 
-  /** Enable/disable kafka */
+  //region KAFKA
+
+  /** Enables/disables publishing logs to Kafka. */
   enableKafkaLogPublishing?: boolean;
 
-  /** Kafka config for publishing logs */
+  /** Configuration settings for Kafka log publishing. */
   kafkaConfig?: KafkaConfig | null;
 
-  /** Kafka client to send message etc... */
+  /** Kafka client instance used to send logs. */
   kafkaClient?: Kafka | null;
+
+  //endregion
+
+  //region OPEN TELEMETRY
+
+  /** Enables/disables publishing logs to OpenTelemetry. */
+  enableOpenTelemetryPublishing?: boolean;
+
+  /** URL for the OpenTelemetry collector endpoint. */
+  openTelemetryURL?: string | null;
+
+  /** OpenTelemetry SDK instance used for logging. */
+  openTelemetrySDK?: NodeSDK | null;
+
+  //endregion
 };

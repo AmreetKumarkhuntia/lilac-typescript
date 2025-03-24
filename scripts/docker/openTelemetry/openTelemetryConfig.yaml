@@ -2,39 +2,38 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: "0.0.0.0:4317"
+        endpoint: 0.0.0.0:4317
       http:
-        endpoint: "0.0.0.0:4318"
+        endpoint: 0.0.0.0:4318
 
 processors:
-  transform:
-    trace_statements:
-      - context: span
-        statements:
-          - set(attributes["startTimeUnixNano"], Int(attributes["startTimeUnixNano"] / 1000000)) where IsMatch(attributes["startTimeUnixNano"], "^.*$")
-          - set(attributes["endTimeUnixNano"], Int(attributes["endTimeUnixNano"] / 1000000)) where IsMatch(attributes["endTimeUnixNano"], "^.*$")
   batch: {}
+  resource:
+    attributes:
+      - key: service.name
+        action: upsert
+        from_attribute: resource.service.name
 
 exporters:
   debug:
     verbosity: detailed
-  
   elasticsearch:
-    endpoints: ["http://elasticsearch:9200"]      # Replace with your Elasticsearch endpoint
-    logs_index: "logs-index"                  # Optional: Custom index name for logs
-    traces_index: "traces-index"              # Optional: Custom index name for traces
+    endpoints: ["http://elasticsearch:9200"]
+    logs_index: "otel-logs"  # Correct date pattern format
+    mapping:
+      mode: "ecs"
+    retry:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
     flush:
-      bytes: 1048576                          # Flush buffer size in bytes
-      interval: "10s"                         # Flush interval
-
+      bytes: 1048576  # 1MB
+      interval: "10s"
+    timeout: "10s"
 
 service:
   pipelines:
-    traces:
+    logs:
       receivers: [otlp]
-      processors: [transform, batch]
-      exporters: [debug, elasticsearch]
-    metrics:
-      receivers: [otlp]
-      processors: [batch]
+      processors: [batch, resource]
       exporters: [debug, elasticsearch]

@@ -20,6 +20,7 @@ exporters:
   elasticsearch:
     endpoints: ["http://elasticsearch:9200"]
     logs_index: "otel-logs"  # Correct date pattern format
+    traces_index: "otel-tracers"
     mapping:
       mode: "ecs"
     retry:
@@ -34,6 +35,10 @@ exporters:
 service:
   pipelines:
     logs:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [debug, elasticsearch]
+    traces:
       receivers: [otlp]
       processors: [batch, resource]
       exporters: [debug, elasticsearch]

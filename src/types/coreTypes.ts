@@ -87,123 +87,221 @@ export type LogSetValues = {
 
 /**
  * * Type defining a log entry structure.
+ * @typedef {Object} ProcessLog
+ * @example <caption>Example log entry</caption>
+ * {
+ *   "orderId": 42,
+ *   "sessionId": "a1b2c3d4-e5f6-7890",
+ *   "processId": "p1q2r3s4-t5u6-7890",
+ *   "functionName": "processPayment",
+ *   "functionType": "FUNCTION_CALLED",
+ *   "body": "{\"amount\":100,\"currency\":\"USD\"}"
+ * }
+ *
+ * @property {number} orderId - Sequential log entry number.
+ * @property {string} sessionId - Unique session identifier.
+ * @property {string} processId - Unique process identifier.
+ * @property {string} functionName - Name of the logged function/method.
+ * @property {FunctionType|string} functionType - Type/category of the function call.
+ * @property {string} body - Additional log data as JSON string.
+ *
+ * @schema {Object} ProcessLogSchema
+ * $schema: "http://json-schema.org/draft-07/schema#"
+ * type: "object"
+ * required: ["orderId", "sessionId", "processId", "functionName", "functionType", "body"]
+ * properties:
+ *   orderId:
+ *     type: "number"
+ *     minimum: 0
+ *   sessionId:
+ *     type: "string"
+ *     pattern: "^[a-f0-9-]+$"
+ *   processId:
+ *     type: "string"
+ *     pattern: "^[a-f0-9-]+$"
+ *   functionName:
+ *     type: "string"
+ *     minLength: 1
+ *   functionType:
+ *     type: "string"
+ *     enum: ["FUNCTION_CALLED", "FUNCTION_CALL_RESULT", "FUNCTION_INFO", ...]
+ *   body:
+ *     type: "string"
+ *     contentMediaType: "application/json"
+ * additionalProperties: false
  */
 export type ProcessLog = {
-  /** Order of the log entry. */
   orderId: number;
-
-  /** Session ID associated with the log. */
   sessionId: string;
-
-  /** Process ID associated with the log. */
   processId: string;
-
-  /** Name of the logged function. */
   functionName: string;
-
-  /** Category/type of the logged function. */
   functionType: FunctionType | string;
-
-  /** Additional log information in JSON format. */
   body: string;
 };
 
 /**
  * * Configuration object for Kafka producer/consumer.
+ * @typedef {Object} KafkaConfig
+ * @example <caption>Example Kafka configuration</caption>
+ * {
+ *   "brokerList": ["kafka1:9092", "kafka2:9092"],
+ *   "clientId": "my-app-producer",
+ *   "kafkaTopics": ["logs", "events"],
+ *   "disconnectAfterSendingMessage": false,
+ *   "messageKey": "session-123",
+ *   "producerConfig": {
+ *     "allowAutoTopicCreation": true,
+ *     "transactionTimeout": 60000
+ *   }
+ * }
+ *
+ * @property {string[]} brokerList - List of Kafka broker addresses.
+ *   Format: ["host:port", "host:port"]
+ * @property {string} clientId - Client ID used to identify the Kafka client.
+ * @property {string[]} kafkaTopics - List of Kafka topics to produce/consume from.
+ * @property {boolean} disconnectAfterSendingMessage - If true, closes producer after each message.
+ * @property {string|null} [messageKey] - Publishing key for Kafka messages.
+ * @property {ProducerConfig} producerConfig - Kafka producer configuration.
+ *
+ * @schema {Object} KafkaConfigSchema
+ * $schema: "http://json-schema.org/draft-07/schema#"
+ * type: "object"
+ * required: ["brokerList", "clientId", "kafkaTopics", "disconnectAfterSendingMessage", "producerConfig"]
+ * properties:
+ *   brokerList:
+ *     type: "array"
+ *     items:
+ *       type: "string"
+ *       pattern: "^.+:\\d+$"
+ *     minItems: 1
+ *     description: "List of Kafka broker addresses in host:port format"
+ *   clientId:
+ *     type: "string"
+ *     minLength: 1
+ *   kafkaTopics:
+ *     type: "array"
+ *     items:
+ *       type: "string"
+ *     minItems: 1
+ *   disconnectAfterSendingMessage:
+ *     type: "boolean"
+ *   messageKey:
+ *     type: ["string", "null"]
+ *   producerConfig:
+ *     $ref: "#/definitions/ProducerConfig"
+ * additionalProperties: false
  */
 export type KafkaConfig = {
-  /**
-   * List of Kafka broker addresses.
-   * Example: ["kafka-broker1:9092", "kafka-broker2:9092"]
-   */
   brokerList: string[];
-
-  /**
-   * Client ID used to identify the Kafka client.
-   * Useful for tracking and debugging.
-   */
   clientId: string;
-
-  /**
-   * List of Kafka topics to produce or consume from.
-   * Example: ["topic1", "topic2"]
-   */
   kafkaTopics: string[];
-
-  /**
-   * Disconnects producer after sending messages.
-   * If true, the Kafka producer will close the connection after each message is sent.
-   */
   disconnectAfterSendingMessage: boolean;
-
-  /**
-   * Publishing key for Kafka.
-   * Used to determine message partitioning and ordering.
-   */
   messageKey?: string | null;
-
-  /**
-   * Custom configuration for Kafka producer.
-   * Allows fine-tuning of Kafka producer behavior.
-   */
   producerConfig: ProducerConfig;
 };
 
 /**
- * * Type for logger settings configuration.
- * ? Defines how the logger will behave and format logs.
+ * * Configuration for OpenTelemetry tracing.
+ * @typedef {Object} OpenTelemetryConfig
+ * @example <caption>Example OpenTelemetry configuration</caption>
+ * {
+ *   "url": "http://otel-collector:4317",
+ *   "scheduledDelayMillis": 5000,
+ *   "maxExportBatchSize": 100,
+ *   "maxQueueSize": 1000
+ * }
+ *
+ * @property {string} url - Collector endpoint URL.
+ * @property {number} scheduledDelayMillis - Interval between span exports in ms.
+ * @property {number} maxExportBatchSize - Maximum spans per batch.
+ * @property {number} maxQueueSize - Maximum queue size.
+ *
+ * @schema {Object} OpenTelemetryConfigSchema
+ * $schema: "http://json-schema.org/draft-07/schema#"
+ * type: "object"
+ * required: ["url", "scheduledDelayMillis", "maxExportBatchSize", "maxQueueSize"]
+ * properties:
+ *   url:
+ *     type: "string"
+ *     format: "uri"
+ *   scheduledDelayMillis:
+ *     type: "number"
+ *     minimum: 1000
+ *   maxExportBatchSize:
+ *     type: "number"
+ *     minimum: 1
+ *   maxQueueSize:
+ *     type: "number"
+ *     minimum: 10
+ *   serviceName:
+ *     type: string
+ *     example: "service abcd"
+ * additionalProperties: false
+ */
+export type OpenTelemetryConfig = {
+  url: string;
+  scheduledDelayMillis: number;
+  maxExportBatchSize: number;
+  maxQueueSize: number;
+  serviceName: string;
+} | null;
+/**
+ * * Comprehensive configuration for the logger's behavior and output formatting.
+ * @typedef {Object} LoggerSettings
+ * @example <caption>Basic Configuration</caption>
+ * {
+ *   displayOrder: ['TIME', 'FUNCTIONNAME'],
+ *   colorsMap: {...},
+ *   enablePrintSeparator: true,
+ *   printSeparator: '|',
+ *   enableKeyMasking: true
+ * }
+ *
+ * @example <caption>With Integrations</caption>
+ * {
+ *   ...basicConfig,
+ *   enableKafkaLogPublishing: true,
+ *   kafkaConfig: {brokerList: ['kafka:9092']},
+ *   enableOpenTelemetryPublishing: true,
+ *   openTelemetryConfig: {url: 'http://otel:4317'}
+ * }
+ *
+ * // Core Formatting Properties
+ * @property {string[]} displayOrder - Order of log fields in output
+ * @property {Record<string, ColorSet>} colorsMap - Color mappings for log fields
+ * @property {boolean} enablePrintSeparator - Show separator between fields
+ * @property {string} printSeparator - Character(s) to use as separator
+ * @property {boolean} enablePrintSpaceBetweenLogKeys - Add spaces between fields
+ * @property {boolean} enableLogCounterIncrement - Auto-increment log counter
+ * @property {Set<string>} maskingKeys - Keys to mask in log output
+ * @property {boolean} enableKeyMasking - Enable/disable masking
+ * @property {boolean} skipFormatting - Skip all formatting if true
+ *
+ * // Kafka Integration
+ * @property {boolean} [enableKafkaLogPublishing] - Enable Kafka log publishing
+ * @property {KafkaConfig|null} [kafkaConfig] - Kafka connection config
+ * @property {Kafka|null} [kafkaClient] - Active Kafka client instance
+ *
+ * // OpenTelemetry Integration
+ * @property {boolean} [enableOpenTelemetryPublishing] - Enable OpenTelemetry
+ * @property {OpenTelemetryConfig|null} [openTelemetryConfig] - OTEL config
+ * @property {string|null} [openTelemetryURL] - @deprecated Use openTelemetryConfig
  */
 export type LoggerSettings = {
-  /** Order of log fields in the output. */
   displayOrder: string[];
-
-  /** Color settings for each log field. */
   colorsMap: Record<string, ColorSet>;
-
-  /** Enables/disables separator between logs. */
   enablePrintSeparator: boolean;
-
-  /** Character/string to use as separator between log fields. */
   printSeparator: string;
-
-  /** Adds space between fields if true. */
   enablePrintSpaceBetweenLogKeys: boolean;
-
-  /** Auto-increments log counter with each new log entry. */
   enableLogCounterIncrement: boolean;
-
-  /** List of keys to mask in the log output. */
   maskingKeys: Set<string>;
-
-  /** Enables/disables masking of specific keys. */
   enableKeyMasking: boolean;
-
-  /** Skips formatting of keys if true. */
   skipFormatting: boolean;
-
-  //region KAFKA
-
-  /** Enables/disables publishing logs to Kafka. */
   enableKafkaLogPublishing?: boolean;
-
-  /** Configuration settings for Kafka log publishing. */
   kafkaConfig?: KafkaConfig | null;
-
-  /** Kafka client instance used to send logs. */
   kafkaClient?: Kafka | null;
-
-  //endregion
-
-  //region OPEN TELEMETRY
-
-  /** Enables/disables publishing logs to OpenTelemetry. */
   enableOpenTelemetryPublishing?: boolean;
-
-  /** URL for the OpenTelemetry collector endpoint. */
+  openTelemetryConfig?: OpenTelemetryConfig | null;
+  /** @deprecated Use openTelemetryConfig instead */
   openTelemetryURL?: string | null;
-
-  /** OpenTelemetry SDK instance used for logging. */
-  openTelemetrySDK?: NodeSDK | null;
-
-  //endregion
 };

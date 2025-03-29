@@ -1,6 +1,8 @@
 import { Partitioners } from 'kafkajs';
 import ProcessLogger from '../src/index.ts';
 import { LoggerSettings } from '../src/types/coreTypes.ts';
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
 
 const testConfigs: Array<Partial<LoggerSettings>> = [
   // //Default test case
@@ -13,16 +15,26 @@ const testConfigs: Array<Partial<LoggerSettings>> = [
   // {
   //   skipFormatting: true,
   // },
+  // {
+  //   enableKafkaLogPublishing: true,
+  //   kafkaConfig: {
+  //     brokerList: ['localhost:9092'],
+  //     clientId: 'test-kafka-client',
+  //     kafkaTopics: ['kafka-test-topic'],
+  //     disconnectAfterSendingMessage: false,
+  //     producerConfig: {
+  //       createPartitioner: Partitioners.LegacyPartitioner,
+  //     },
+  //   },
+  // },
   {
-    enableKafkaLogPublishing: true,
-    kafkaConfig: {
-      brokerList: ['localhost:9092'],
-      clientId: 'test-kafka-client',
-      kafkaTopics: ['kafka-test-topic'],
-      disconnectAfterSendingMessage: false,
-      producerConfig: {
-        createPartitioner: Partitioners.LegacyPartitioner,
-      },
+    enableOpenTelemetryPublishing: true,
+    openTelemetryConfig: {
+      url: 'http://localhost:4318/v1/traces',
+      scheduledDelayMillis: 100,
+      maxExportBatchSize: 100,
+      maxQueueSize: 1000,
+      serviceName: 'test-logger',
     },
   },
 ];
@@ -127,8 +139,10 @@ function testLogWithMasking(currLogger: ProcessLogger): void {
 async function runTests() {
   for (let i = 0; i < testConfigs.length; i++) {
     const currConfig = testConfigs[i];
-    console.log(`>>>>>>>>>>> RUNNING TEST CASE: ${i} <<<<<<<<<<<`);
     const currLogger = new ProcessLogger(currConfig);
+
+    console.log(`>>>>>>>>>>> RUNNING TEST CASE: ${i} <<<<<<<<<<<`);
+
     testLogFunctionCalled(currLogger);
     testLogFunctionCallResult(currLogger);
     testLogFunctionInfo(currLogger);
@@ -145,6 +159,10 @@ async function runTests() {
     testLogWithMaskingInDebug(currLogger);
     testLogWithMasking(currLogger);
   }
+
+  const rl = readline.createInterface({ input, output });
+  await rl.question('Press Enter to exit...');
+  rl.close();
 }
 
 runTests();

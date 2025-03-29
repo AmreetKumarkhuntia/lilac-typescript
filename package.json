@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "lilac-typescript",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "author": "Amreet Khuntia",
   "license": "Apache-2.0",
   "description": "A Node.js process logger for backend applications",
@@ -25,7 +25,8 @@
     "prepare": "husky",
     "start:kafka": "chmod +x ./scripts/start-kafka.sh && bash ./scripts/start-kafka.sh",
     "test:log": "NODE_OPTIONS='--import=./register.js' node ./test/testLog.ts",
-    "docker:run:ot": "cd ./scripts/docker/openTelemetry && docker-compose up -d"
+    "docker:run:ot": "cd ./scripts/docker/openTelemetry && docker-compose up -d",
+    "docker:kafka:ot": "cd ./scripts/docker/kafka && docker-compose up -d"
   },
   "repository": {
     "type": "git",

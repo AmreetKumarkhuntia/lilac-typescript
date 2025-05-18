@@ -69,8 +69,15 @@ const logger = new ProcessLogger({
 
 ```typescript
 const logger = new ProcessLogger({
-  enableOpenTelemetryPublishing: true,
-  openTelemetryURL: 'http://localhost:4318',
+  enableOpenTelemetryPublishing: true, // Enable OpenTelemetry publishing
+  openTelemetryConfig: {
+    // Provide OpenTelemetry configuration
+    url: 'http://localhost:4317', // Replace with your collector endpoint
+    scheduledDelayMillis: 5000,
+    maxExportBatchSize: 100,
+    maxQueueSize: 1000,
+    serviceName: 'my-service', // Replace with your service name
+  },
 });
 
 // Initialize tracing

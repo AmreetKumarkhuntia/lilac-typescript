@@ -106,7 +106,6 @@ export class ProcessLogger {
     // OpenTelemetry settings
     enableOpenTelemetryPublishing: false,
     openTelemetryConfig: undefined,
-    openTelemetryURL: undefined,
   };
 
   /**

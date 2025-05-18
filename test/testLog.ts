@@ -6,15 +6,15 @@ import { stdin as input, stdout as output } from 'node:process';
 
 const testConfigs: Array<Partial<LoggerSettings>> = [
   // //Default test case
-  // {},
+  {},
   // //Masking test case
   // {
   //   maskingKeys: new Set<string>(['sensitiveKey']),
   // },
   // // Formatting test case
-  // {
-  //   skipFormatting: true,
-  // },
+  {
+    skipFormatting: true,
+  },
   // {
   //   enableKafkaLogPublishing: true,
   //   kafkaConfig: {

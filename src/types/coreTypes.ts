@@ -285,7 +285,6 @@ export type OpenTelemetryConfig = {
  * // OpenTelemetry Integration
  * @property {boolean} [enableOpenTelemetryPublishing] - Enable OpenTelemetry
  * @property {OpenTelemetryConfig|null} [openTelemetryConfig] - OTEL config
- * @property {string|null} [openTelemetryURL] - @deprecated Use openTelemetryConfig
  */
 export type LoggerSettings = {
   displayOrder: string[];
@@ -302,6 +301,4 @@ export type LoggerSettings = {
   kafkaClient?: Kafka | null;
   enableOpenTelemetryPublishing?: boolean;
   openTelemetryConfig?: OpenTelemetryConfig | null;
-  /** @deprecated Use openTelemetryConfig instead */
-  openTelemetryURL?: string | null;
 };
